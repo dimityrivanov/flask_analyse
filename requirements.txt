@@ -1,2 +1,2 @@
-flask
-pandas
+Flask==3.0.3
+pandas==2.3.3
