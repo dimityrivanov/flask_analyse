@@ -2,12 +2,27 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import json
 from datetime import datetime
-from flask_cors import CORS  # <-- import CORS
+from flask_cors import CORS
+import math
 
 app = Flask(__name__)
 CORS(app)
 
+# Helper function to recursively fix NaN values
+def fix_nan(obj):
+    if isinstance(obj, dict):
+        return {k: fix_nan(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [fix_nan(x) for x in obj]
+    elif isinstance(obj, float) and math.isnan(obj):
+        return None
+    else:
+        return obj
+
 def analyze_transactions(data):
+    # Fix NaNs first
+    data = fix_nan(data)
+
     # Extract booked and pending
     booked = data.get("transactions", {}).get("booked", [])
     pending = data.get("transactions", {}).get("pending", [])
