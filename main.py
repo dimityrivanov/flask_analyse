@@ -70,6 +70,16 @@ def analyze_transactions(data):
                 "iban": row.get("creditorAccount.iban"),
                 "remittance": row.get("remittanceInformationUnstructured")
             })
+    # Average days between payments per debtor
+    payment_frequency = {}
+    if "debtorName" in df.columns and "bookingDate" in df.columns:
+        for debtor, group in df.groupby("debtorName"):
+            dates = group["bookingDate"].dropna().sort_values()
+            if len(dates) > 1:
+                diffs = dates.diff().dropna().dt.days
+                avg_diff = diffs.mean()
+                payment_frequency[debtor] = round(avg_diff, 2)
+
 
     output = {
         "summary": {
@@ -80,6 +90,7 @@ def analyze_transactions(data):
         },
         "daily_totals": daily_summary,
         "top_debtors": top_debtors,
+        "payment_frequency": payment_frequency, 
         "potential_duplicates": potential_duplicates,
         "transaction_count": len(df)
     }
