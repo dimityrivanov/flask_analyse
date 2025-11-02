@@ -191,7 +191,7 @@ def analyze_transactions(data):
             "currency": df["currency"].iloc[0] if not df.empty else "BGN"
         },
         "daily_totals": daily_summary,
-        "top_counterparties": top_counterparties,
+        "top_debtors": top_counterparties,
         "payment_frequency": payment_frequency,
         "potential_duplicates": potential_duplicates,
         "outliers": outliers,
